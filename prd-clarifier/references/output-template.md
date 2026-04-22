@@ -1,3 +1,15 @@
+---
+doc_type: prd_clarification
+change_name: ""
+review_status: draft
+confirmation_status: 初稿
+blocking_p0_count: 0
+open_p1_count: 0
+open_p2_count: 0
+source_scope: clarified_document_only
+downstream_trigger: manual
+---
+
 # <文档标题>
 
 > 本文档是对原始 PRD/需求材料进行梳理、澄清和结构化整理后的结果，面向 AI 后续生成执行计划、任务拆分、代码实现与自动测试。
@@ -8,7 +20,12 @@
 - 转换时间：
 - 输入类型：
 - 转换目标：
+- 推荐 change_name：
 - 确认状态：初稿 / 部分已确认 / 已完成确认 / 确认未完成
+- review_status：draft / partially_confirmed / ready_for_downstream / blocked
+- blocking_p0_count：
+- open_p1_count：
+- open_p2_count：
 
 ## 2. 需求目标与原始内容摘要
 - 用 5-10 条摘要概括原始 PRD 的目标和范围
@@ -132,15 +149,20 @@
 - 原因：
 - 对实现的影响：
 
-## 14. AI 执行提示
+## 14. AI 执行提示（非需求事实）
+
+> 本章节是下游消费约束，不是新增业务需求。生成 OpenSpec proposal/spec/design/tasks 时，不得把本章节当成功能需求来源。
+
+- 仅当 `review_status: ready_for_downstream` 且 `blocking_p0_count: 0` 时，建议进入 `/opsx:propose`
 - 后续可直接用于生成 implementation plan
 - 后续可直接用于拆分任务
 - 后续可直接用于生成代码与测试
+- `P1/P2` 未确认项只能进入 Open Questions / Risks，不得写成已确认需求
 - 禁止假设的关键空白点：
 
-## 15. 下游 Skill 数据契约
+## 15. 下游 Skill 数据契约（非需求事实）
 
-> 本章节定义下游 Skill（Planner、TDD、Code Reviewer 等）如何消费本文档。
+> 本章节定义下游 Skill（Planner、TDD、Code Reviewer 等）如何消费本文档，不是产品需求正文。
 
 ### 15.1 Planner Skill 消费指南
 
@@ -161,7 +183,7 @@
 | 未决问题类型 | 处理方式 |
 |-------------|---------|
 | §13.1 已确认项回写记录 | 视为已确认事实，可直接用于任务拆分 |
-| §13.2 待逐条确认问题 | 作为计划中的"待确认阻塞点"，标注在任务列表中 |
+| §13.2 待逐条确认问题 | 若含 `P0` 则作为阻塞点；仅 `P1/P2` 时作为开放问题或风险点 |
 | §13.3 暂未确认/留空项 | 作为"风险点"，计划中标注需后续澄清 |
 
 **禁止行为：**
@@ -179,6 +201,8 @@
 | **建议消费** | §5 关键业务规则与约束 | 边界条件和异常分支测试 |
 
 ### 15.4 文档状态与下游行为
+
+> 如 frontmatter 与正文状态描述不一致，以 frontmatter 为准。
 
 | 确认状态 | 下游 Skill 行为 |
 |---------|----------------|
