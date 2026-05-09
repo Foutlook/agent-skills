@@ -1,6 +1,6 @@
 ---
 name: refactor-module-safely
-description: Use this skill whenever the user asks Codex to refactor, reorganize, modularize, simplify, decouple, clean up, or improve a specific code module, feature module, service, controller, domain flow, or architecture area while preserving business behavior. This skill is especially important for requests like "重构这个功能模块", "优化代码结构但不改业务逻辑", "按 Clean Code/DDD/设计模式重构", "拆分这个 service", "整理架构", or any refactor where user review is required before changing behavior.
+description: Use this skill whenever the user asks Codex to refactor, reorganize, modularize, simplify, decouple, clean up, or improve a specific code module, feature module, service, controller, domain flow, or architecture area while preserving business behavior. Also use it when the refactor is expected to address concrete performance, concurrency, locking, thread-safety, memory, GC, resource-leak, timeout, retry, reliability, or implementation-level security issues inside that module without casually changing business logic. This skill is especially important for requests like "重构这个功能模块", "优化代码结构但不改业务逻辑", "顺手优化性能问题", "看看锁和线程安全", "处理内存/GC问题", "按 Clean Code/DDD/设计模式重构", "拆分这个 service", "整理架构", or any refactor where user review is required before changing behavior.
 ---
 
 # Refactor Module Safely
@@ -9,13 +9,15 @@ description: Use this skill whenever the user asks Codex to refactor, reorganize
 
 Guide behavior-preserving refactors from the module architecture downward. The goal is to reduce real maintenance cost without changing business logic unless the user explicitly approves a reviewed behavior change.
 
-Use Clean Code, design principles, design patterns, and DDD as tools, not decoration. Every change must pay for itself with a concrete reason: lower coupling, clearer responsibility, reduced duplication, safer tests, easier extension for known needs, or removal of misleading structure.
+Use Clean Code, design principles, design patterns, and DDD as tools, not decoration. Every change must pay for itself with a concrete reason: lower coupling, clearer responsibility, reduced duplication, safer tests, easier extension for known needs, removal of misleading structure, or elimination of concrete performance, security, or reliability risks inside the target module.
 
 ## Operating Rules
 
 - Start with the user-identified module and its actual execution paths. Do not refactor adjacent areas just because they look imperfect.
 - Preserve existing business behavior by default. Treat observable behavior, persistence effects, external calls, events, logs relied on by operations, authorization checks, validation rules, and error semantics as behavior.
+- Treat concrete performance, security, and quality problems inside the target module as valid refactor scope when they are evidenced in code or runtime symptoms. Typical examples: lock misuse, contention caused by duplicated coordination logic, thread-unsafe mutable state, unsafe multi-thread access, interrupt swallowing, resource leaks, excessive temporary allocation, unbounded in-memory retention, avoidable GC pressure, missing cleanup, retry storms, timeout misuse, or obviously unsafe handling of sensitive data.
 - If a behavior change appears necessary, stop before implementation and present a change proposal for review.
+- If fixing a security or reliability issue would change authorization, validation, visible error behavior, persistence effects, retry semantics, timeout behavior, lock scope, or notification timing, treat it as a behavior-change proposal and wait for approval.
 - If the user says "直接改" or asks not to wait, continue only for behavior-preserving structural work. Still stop for any possible behavior change, data result change, authorization/validation change, persistence change, external-call change, or compatibility risk.
 - Avoid speculative architecture. Use foreseeable requirements the user provided or that are clearly visible in code. Do not build generic frameworks, abstract factories, plug-in systems, or broad DDD layers without evidence they solve current complexity.
 - Do not refactor for taste alone. If a change cannot be justified against the current module's pain or risk, leave it out.
@@ -45,7 +47,7 @@ Create a short baseline before designing the refactor:
 - Current behavior contract, including important edge cases.
 - Current data flow from entry point to final persistence/fetch/calculation.
 - Current fact ownership: distinguish real-time runtime state, persisted records, derived response DTOs, and outbound notifications. Do not collapse them into one vague "data source" when they have different consistency or lifecycle rules.
-- Current risks: duplication, N+1 calls, hidden side effects, transaction ambiguity, unclear naming, misplaced domain rules, brittle conditionals, or difficult tests.
+- Current risks: duplication, N+1 calls, hidden side effects, transaction ambiguity, unclear naming, misplaced domain rules, brittle conditionals, difficult tests, lock contention, duplicated lock orchestration, thread-safety hazards, interrupt handling mistakes, resource leaks, memory retention, excessive allocation, GC pressure, retry storms, timeout misuse, or unsafe sensitive-data handling.
 - Verification options: existing tests, focused new tests, golden-master tests, request/response examples, logs, or manual checks.
 
 For code changes, prefer adding focused characterization tests before refactoring when existing coverage is weak and the behavior is observable.
@@ -55,7 +57,7 @@ For code changes, prefer adding focused characterization tests before refactorin
 Choose one of these paths before editing:
 
 - **Fast path**: Use only for tiny, local, behavior-preserving cleanup where all conditions are true: one narrow area, no public contract change, no data/query/remote-call change, no authorization or validation change, no transaction or error semantic change, and verification is straightforward. State the scope, reason, behavior-preservation basis, and verification before editing; user pre-approval is not required unless project instructions require it.
-- **Plan review path**: Use for substantial module refactors, multi-file moves, responsibility splits, new abstractions, DDD boundary changes, test strategy changes, or anything the user explicitly asked to review first. Present the refactor plan and wait for approval.
+- **Plan review path**: Use for substantial module refactors, multi-file moves, responsibility splits, new abstractions, DDD boundary changes, test strategy changes, concurrency/locking changes, memory-lifecycle cleanup, performance tuning beyond trivial local cleanup, or anything the user explicitly asked to review first. Present the refactor plan and wait for approval.
 - **Behavior-change path**: Use when any result, side effect, validation, compatibility, persistence, external call, or error behavior may change. Present the business logic change proposal and wait for explicit approval.
 
 When unsure, choose the plan review path. If the uncertainty is about behavior, choose the behavior-change path.
@@ -85,6 +87,10 @@ Use this structure:
 ### 不修改范围
 - [explicitly excluded areas]
 
+### 性能/安全/质量风险
+- [concrete issue]
+- [why it is real and in scope]
+
 ### 重构步骤
 1. [small, reviewable step]
 2. [small, reviewable step]
@@ -95,6 +101,10 @@ Use this structure:
 ### 业务逻辑影响
 - 默认结论: 不改变业务逻辑
 - 依据: [why behavior is expected to remain equivalent]
+
+### 性能/安全/质量影响
+- [what risk is reduced]
+- [what boundary remains unchanged]
 
 ### 验证方式
 - [tests/commands/manual checks]
@@ -127,6 +137,9 @@ Example of the expected level of specificity:
 ### 不修改范围
 - Controller 接口、DTO 字段、Mapper SQL、couponClient 协议
 
+### 性能/安全/质量风险
+- 当前主要是可维护性和 N+1 回退风险，暂无额外并发或内存问题证据
+
 ### 重构步骤
 1. 用现有输入输出补一组结算结果保护测试
 2. 提取 validateSettlementRequest、loadPriceContext、calculateDiscountAllocation
@@ -140,6 +153,10 @@ Example of the expected level of specificity:
 ### 业务逻辑影响
 - 默认结论: 不改变业务逻辑
 - 依据: 不改入口参数、SQL、远程调用、优惠公式和错误类型，只调整内部组织方式
+
+### 性能/安全/质量影响
+- 降低 N+1 回退风险
+- 不改变远程调用次数、SQL 条件、事务边界和错误类型
 
 ### 验证方式
 - 运行 OrderSettlementServiceTest
@@ -193,6 +210,7 @@ After approval:
 
 - Make small, cohesive edits that map to the reviewed plan.
 - Prefer improving names, extracting cohesive functions/classes, moving rules to clearer owners, reducing duplication, and clarifying boundaries over adding abstractions.
+- When the target module has concrete performance, security, or reliability issues, fix them in the same refactor only if the evidence is local and the change can be justified as in-scope. Typical candidates: deduplicating lock orchestration, tightening lock ownership, restoring interrupt handling, removing thread-unsafe shared mutation, bounding in-memory state, reducing avoidable allocations, ensuring cleanup in finally/try-with-resources, preserving batch boundaries, or removing retry/timeout misuse.
 - Use design patterns only when the code already has pattern-shaped pressure:
   - Strategy: multiple interchangeable algorithms or policy variants.
   - Template Method: stable skeleton with variable steps.
@@ -204,6 +222,7 @@ After approval:
   - Put real domain rules near domain concepts when the project has or benefits from that structure.
   - Do not introduce aggregates, repositories, domain events, or value objects merely because DDD vocabulary exists.
 - Avoid N+1 database/RPC/API calls. For list or batch flows, collect parameters first, fetch in bulk, then map in memory.
+- For concurrency-sensitive flows, preserve or explicitly review the correctness boundary: lock scope, reentrancy assumptions, ownership checks, interrupt semantics, retry window, visibility of shared state, timer lifecycle, and cleanup guarantees.
 - Keep comments outside the changed logic untouched.
 
 ### 7. Verify And Report
@@ -224,6 +243,7 @@ Use these checks to keep outputs reviewable instead of ceremonial:
 
 - A refactor plan is acceptable only if a reviewer can identify the entry point, changed files, unchanged files, data source or calculation point, verification command, and at least one concrete reason for each proposed step.
 - A behavior-preservation claim is acceptable only if it names what did not change: public contract, query or remote-call parameters, calculation formula, persistence effect, validation/authorization rule, error type, or event/log side effect as relevant to the module.
+- If the plan includes a performance, security, or quality fix, it is acceptable only if it identifies the concrete symptom or risk, the code evidence proving it is real, the preserved boundary, and how the improvement will be verified.
 - For modules with Redis/cache runtime state, timers, MQ, WebSocket, or after-commit callbacks, a behavior-preservation claim must also state which consistency boundary is unchanged: lock scope, timer lifecycle, dedupe key semantics, transaction boundary, retry/scan behavior, or notification timing.
 - An uncertainty item is acceptable only if it blocks a decision or could change scope, behavior, compatibility, data correctness, or verification strategy. Do not list vague questions that can be answered by reading code.
 - A design-pattern or DDD recommendation is acceptable only if it points to repeated variants, misplaced domain rules, dependency leakage, or testability pain visible in the target module.
@@ -235,7 +255,7 @@ If an output cannot meet this bar, gather more code evidence or reduce the propo
 
 Use these heuristics to decide whether a change belongs in the refactor:
 
-- **Include** changes that reduce a concrete problem visible in the target module: long method with mixed abstraction levels, repeated business rules, unclear dependency direction, hidden remote calls, hard-to-test branches, confusing names, duplicated DTO mapping, or misplaced validation.
+- **Include** changes that reduce a concrete problem visible in the target module: long method with mixed abstraction levels, repeated business rules, unclear dependency direction, hidden remote calls, hard-to-test branches, confusing names, duplicated DTO mapping, misplaced validation, lock duplication, unsafe shared mutable state, swallowed interrupts, unbounded caches/collections, unnecessary allocation hotspots, resource leaks, or avoidable GC pressure.
 - **Exclude** changes that only satisfy personal style: blanket renaming, moving files without boundary improvement, replacing straightforward code with patterns, generic base classes, new framework layers, or formatting churn.
 - **Prefer minimal closed-loop fixes** when removing incorrect restrictions or historical guards. Do not add fallback fields, alternate branches, or cross-entity mappings unless proven by code, schema, query, or API usage.
 - **Prefer readability that preserves locality**. Small functions are useful when they name a concept or isolate a responsibility; excessive fragmentation can make business flow harder to follow.
@@ -251,6 +271,7 @@ Before implementing, confirm the plan answers:
 - Which changes are structural only?
 - Which changes could affect behavior and therefore need approval?
 - Why is each change necessary?
+- What concrete performance, security, or quality risk is being addressed, and what evidence proves it?
 - What foreseeable requirement is being supported, and where is the evidence?
 - What will not be touched?
 - How will equivalence be verified?
