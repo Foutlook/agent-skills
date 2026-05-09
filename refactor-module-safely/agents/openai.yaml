@@ -1,0 +1,4 @@
+interface:
+  display_name: "Safe Module Refactoring"
+  short_description: "Behavior-preserving module refactors"
+  default_prompt: "请使用这个 skill 为我重构指定功能模块，先给出计划、不确定点和验证方式，等待我审阅后再改代码。"

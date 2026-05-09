@@ -50,6 +50,28 @@ Copy-Item -Recurse .\writing-backend-technical-solutions $env:USERPROFILE\.codex
 
 ---
 
+### refactor-module-safely
+
+**用途**: 安全重构指定功能模块
+
+从整体架构和真实执行链路出发，在不改变业务逻辑的前提下重构用户指定模块；若必须变更逻辑，先产出变更前后方案、对比与风险，等待人工审阅后再继续。
+
+**适用场景**:
+- 用户要求“重构这个功能模块”“优化代码结构但不改业务逻辑”
+- 需要按 Clean Code、设计原则、设计模式、DDD 整理模块职责与结构
+- 需要先给出可审阅的重构计划、不确定点和行为变更边界
+
+**安装方式**:
+```powershell
+# Claude Code
+Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.claude\skills\
+
+# Codex
+Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.codex\skills\
+```
+
+---
+
 ## 目录结构
 
 ```
@@ -68,6 +90,11 @@ skills/
 │   ├── SKILL.md              # Skill 主定义
 │   ├── test-prompts.json     # 测试用例
 │   └── references/           # 参考模板与示例
+│
+├── refactor-module-safely/
+│   ├── SKILL.md              # Skill 主定义
+│   ├── test-prompts.json     # 测试用例
+│   └── agents/               # 平台适配配置
 │
 └── README.md                 # 本文件
 ```
@@ -90,10 +117,12 @@ skills/
 # 一键安装到 Claude Code
 Copy-Item -Recurse .\prd-clarifier $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\writing-backend-technical-solutions $env:USERPROFILE\.claude\skills\
+Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.claude\skills\
 
 # 一键安装到 Codex
 Copy-Item -Recurse .\prd-clarifier $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\writing-backend-technical-solutions $env:USERPROFILE\.codex\skills\
+Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.codex\skills\
 ```
 
 ## 版本管理
