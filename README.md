@@ -72,6 +72,34 @@ Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.codex\skills\
 
 ---
 
+### repo-wiki
+
+**用途**: 基于代码库自动生成结构化 Wiki 文档
+
+从代码库中提取关键信息，生成一份覆盖项目架构、模块关系与实现细节的结构化 Wiki 文档。自动检测 BPMN 流程、DDD 分层、策略模式、状态机等场景并生成 Mermaid 图表。
+
+**适用场景**:
+- 用户要求"生成 repo wiki""项目文档""代码库概览""architecture doc"
+- 用户说"帮我梳理一下这个项目""这个代码库是怎么组织的"
+- 需要快速了解一个新项目的架构、模块关系和关键设计决策
+
+**核心特性**:
+- 三种输出模式：完整 Wiki / 轻量概览 / 局部 Wiki，按用户意图自动选择
+- 证据链原则：每个结论附文件路径或类名作为证据
+- 智能画图：自动检测 BPMN/Workflow/Strategy/State/DDD 等模式并生成 Mermaid 图
+- 大型项目策略：>500 文件时分批扫描、并行分析、聚焦核心模块
+
+**安装方式**:
+```powershell
+# Claude Code
+Copy-Item -Recurse .\repo-wiki $env:USERPROFILE\.claude\skills\
+
+# Codex
+Copy-Item -Recurse .\repo-wiki $env:USERPROFILE\.codex\skills\
+```
+
+---
+
 ## 目录结构
 
 ```
@@ -96,6 +124,9 @@ skills/
 │   ├── test-prompts.json     # 测试用例
 │   └── agents/               # 平台适配配置
 │
+├── repo-wiki/
+│   └── SKILL.md              # Skill 主定义
+│
 └── README.md                 # 本文件
 ```
 
@@ -105,11 +136,14 @@ skills/
 
 ```
 原始需求材料 → prd-clarifier → 澄清文档 → writing-backend-technical-solutions → 后端技术方案 → 实现编码
+
+新项目接手 → repo-wiki → 项目架构文档 → 快速理解全貌
 ```
 
 1. 先用 `prd-clarifier` 把散乱需求整理成结构化文档
 2. 再用 `writing-backend-technical-solutions` 结合代码库生成可评审方案
 3. 方案评审通过后进入实现编码
+4. 接手新项目时用 `repo-wiki` 快速生成项目架构文档
 
 ## 安装全部 Skills
 
@@ -118,11 +152,13 @@ skills/
 Copy-Item -Recurse .\prd-clarifier $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\writing-backend-technical-solutions $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.claude\skills\
+Copy-Item -Recurse .\repo-wiki $env:USERPROFILE\.claude\skills\
 
 # 一键安装到 Codex
 Copy-Item -Recurse .\prd-clarifier $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\writing-backend-technical-solutions $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.codex\skills\
+Copy-Item -Recurse .\repo-wiki $env:USERPROFILE\.codex\skills\
 ```
 
 ## 版本管理
