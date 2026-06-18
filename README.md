@@ -50,6 +50,29 @@ Copy-Item -Recurse .\writing-backend-technical-solutions $env:USERPROFILE\.codex
 
 ---
 
+### verify-implementation-with-test-cases
+
+**用途**: 实现后测试用例对齐验证
+
+在方案实现完成后，根据测试提供的测试用例、缺陷反馈、验收结果或回归记录，反向核对需求、技术方案、代码实现和测试预期是否一致。
+
+**适用场景**:
+- 方案已经实现，需要按测试用例验证是否满足需求
+- 测试失败后，需要判断是需求缺失、方案遗漏、实现偏差、测试用例偏差，还是测试环境 / 数据问题
+- 发布前需要形成“需求 → 方案 → 实现 → 测试用例 → 实际结果”的证据链
+- 需要根据测试用例补充覆盖不足、边界场景或回归验证点
+
+**安装方式**:
+```powershell
+# Claude Code
+Copy-Item -Recurse .\verify-implementation-with-test-cases $env:USERPROFILE\.claude\skills\
+
+# Codex
+Copy-Item -Recurse .\verify-implementation-with-test-cases $env:USERPROFILE\.codex\skills\
+```
+
+---
+
 ### refactor-module-safely
 
 **用途**: 安全重构指定功能模块
@@ -141,6 +164,10 @@ skills/
 │   ├── test-prompts.json     # 测试用例
 │   └── references/           # 参考模板与示例
 │
+├── verify-implementation-with-test-cases/
+│   ├── SKILL.md              # Skill 主定义
+│   └── test-prompts.json     # 测试用例
+│
 ├── refactor-module-safely/
 │   ├── SKILL.md              # Skill 主定义
 │   ├── test-prompts.json     # 测试用例
@@ -163,7 +190,7 @@ skills/
 推荐的 Skill 联用流程：
 
 ```
-原始需求材料 → prd-clarifier → 澄清文档 → writing-backend-technical-solutions → 后端技术方案 → 实现编码
+原始需求材料 → prd-clarifier → 澄清文档 → writing-backend-technical-solutions → 后端技术方案 → 实现编码 → verify-implementation-with-test-cases → 验收对齐报告
 
 新项目接手 → repo-wiki → 项目架构文档 → 快速理解全貌
 
@@ -173,8 +200,9 @@ TOB 多仓库迭代 → tob-weekly-review → 周报 / 风险 action / 下周计
 1. 先用 `prd-clarifier` 把散乱需求整理成结构化文档
 2. 再用 `writing-backend-technical-solutions` 结合代码库生成可评审方案
 3. 方案评审通过后进入实现编码
-4. 接手新项目时用 `repo-wiki` 快速生成项目架构文档
-5. 每周用 `tob-weekly-review` 固定沉淀 TOB 研发进展与风险闭环
+4. 实现完成后用 `verify-implementation-with-test-cases` 根据测试用例核对需求、方案、实现和测试预期
+5. 接手新项目时用 `repo-wiki` 快速生成项目架构文档
+6. 每周用 `tob-weekly-review` 固定沉淀 TOB 研发进展与风险闭环
 
 ## 安装全部 Skills
 
@@ -182,6 +210,7 @@ TOB 多仓库迭代 → tob-weekly-review → 周报 / 风险 action / 下周计
 # 一键安装到 Claude Code
 Copy-Item -Recurse .\prd-clarifier $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\writing-backend-technical-solutions $env:USERPROFILE\.claude\skills\
+Copy-Item -Recurse .\verify-implementation-with-test-cases $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\repo-wiki $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\tob-weekly-review $env:USERPROFILE\.claude\skills\
@@ -189,6 +218,7 @@ Copy-Item -Recurse .\tob-weekly-review $env:USERPROFILE\.claude\skills\
 # 一键安装到 Codex
 Copy-Item -Recurse .\prd-clarifier $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\writing-backend-technical-solutions $env:USERPROFILE\.codex\skills\
+Copy-Item -Recurse .\verify-implementation-with-test-cases $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\repo-wiki $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\tob-weekly-review $env:USERPROFILE\.codex\skills\
