@@ -100,6 +100,28 @@ Copy-Item -Recurse .\repo-wiki $env:USERPROFILE\.codex\skills\
 
 ---
 
+### tob-weekly-review
+
+**用途**: TOB 研发周报与跨仓库复盘
+
+把 git log、PR/MR、需求文档、测试反馈、发布记录和历史周报整理成可复盘的 TOB 研发周报，并形成风险 action 闭环。
+
+**适用场景**:
+- 用户要求生成 TOB 周报、研发周报、跨仓库复盘或迭代总结
+- 需要从多个仓库梳理业务进展、后端工作、跨模块依赖和发布风险
+- 需要回看上周 action，并沉淀下周动作、测试关注点和证据索引
+
+**安装方式**:
+```powershell
+# Claude Code
+Copy-Item -Recurse .\tob-weekly-review $env:USERPROFILE\.claude\skills\
+
+# Codex
+Copy-Item -Recurse .\tob-weekly-review $env:USERPROFILE\.codex\skills\
+```
+
+---
+
 ## 目录结构
 
 ```
@@ -127,6 +149,12 @@ skills/
 ├── repo-wiki/
 │   └── SKILL.md              # Skill 主定义
 │
+├── tob-weekly-review/
+│   ├── SKILL.md              # Skill 主定义
+│   ├── agents/               # 平台适配配置
+│   ├── references/           # 周报模板
+│   └── scripts/              # 周报骨架生成脚本
+│
 └── README.md                 # 本文件
 ```
 
@@ -138,12 +166,15 @@ skills/
 原始需求材料 → prd-clarifier → 澄清文档 → writing-backend-technical-solutions → 后端技术方案 → 实现编码
 
 新项目接手 → repo-wiki → 项目架构文档 → 快速理解全貌
+
+TOB 多仓库迭代 → tob-weekly-review → 周报 / 风险 action / 下周计划
 ```
 
 1. 先用 `prd-clarifier` 把散乱需求整理成结构化文档
 2. 再用 `writing-backend-technical-solutions` 结合代码库生成可评审方案
 3. 方案评审通过后进入实现编码
 4. 接手新项目时用 `repo-wiki` 快速生成项目架构文档
+5. 每周用 `tob-weekly-review` 固定沉淀 TOB 研发进展与风险闭环
 
 ## 安装全部 Skills
 
@@ -153,12 +184,14 @@ Copy-Item -Recurse .\prd-clarifier $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\writing-backend-technical-solutions $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\repo-wiki $env:USERPROFILE\.claude\skills\
+Copy-Item -Recurse .\tob-weekly-review $env:USERPROFILE\.claude\skills\
 
 # 一键安装到 Codex
 Copy-Item -Recurse .\prd-clarifier $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\writing-backend-technical-solutions $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\repo-wiki $env:USERPROFILE\.codex\skills\
+Copy-Item -Recurse .\tob-weekly-review $env:USERPROFILE\.codex\skills\
 ```
 
 ## 版本管理

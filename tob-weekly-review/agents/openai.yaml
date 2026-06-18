@@ -1,0 +1,7 @@
+interface:
+  display_name: "TOB Weekly Review"
+  short_description: "生成 TOB 研发周报、风险清单和 action 闭环"
+  default_prompt: "Use $tob-weekly-review to summarize this week's TOB development progress, risks, and next actions."
+
+policy:
+  allow_implicit_invocation: true
