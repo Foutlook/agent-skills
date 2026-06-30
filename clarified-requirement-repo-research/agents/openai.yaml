@@ -1,0 +1,4 @@
+interface:
+  display_name: "Clarified Requirement Repo Research"
+  short_description: "Find backend repo boundaries and change scopes"
+  default_prompt: "Use $clarified-requirement-repo-research to turn a clarified requirement document into read-only backend repository archaeology, including required code-change repositories, per-repository change scope, and source-backed evidence."
