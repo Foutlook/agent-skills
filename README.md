@@ -28,6 +28,38 @@ Copy-Item -Recurse .\prd-clarifier $env:USERPROFILE\.codex\skills\
 
 ---
 
+### clarified-requirement-repo-research
+
+**用途**: 基于澄清需求做后端依赖仓库考古
+
+把已澄清需求文档、PRD、speckit spec、工单分析或功能 brief，转换成面向后端依赖仓库的源码调研报告，识别仓库边界、需要修改的仓库、每仓库变更范围、入口、调用链、数据来源、集成边界、风险和源码证据。
+
+**适用场景**:
+- 已有澄清后的需求，需要先分析“到底要改哪些后端仓库”
+- 需求跨多个后端服务、BFF、共享 SDK、配置/SQL 仓库或消息消费者
+- 编码前需要输出 `research.md`，按仓库维度列出需改仓库和变更范围
+- 需要默认通过远程 `repo_codebase` MCP 读取仓库源码，远程读不到时再回退本地 checkout
+
+**核心特性**:
+- 远程优先：默认使用 `mcp_servers.repo_codebase` 只读读取远程仓库代码
+- 本地兜底：远程 MCP 读不到目标仓库、文件、搜索结果或语义证据时，再读取用户提供的本地 checkout
+- 仓库维度输出：先列 `需改仓库清单`，再逐仓库展开 `每仓库变更范围`
+- 证据优先：所有重要结论都要附仓库、文件、行号/符号和置信度
+
+**安装方式**:
+```powershell
+# Claude Code
+Copy-Item -Recurse .\clarified-requirement-repo-research $env:USERPROFILE\.claude\skills\
+
+# Codex
+Copy-Item -Recurse .\clarified-requirement-repo-research $env:USERPROFILE\.codex\skills\
+
+# Agents
+Copy-Item -Recurse .\clarified-requirement-repo-research $env:USERPROFILE\.agents\skills\
+```
+
+---
+
 ### writing-backend-technical-solutions
 
 **用途**: 后端技术方案编写
@@ -159,6 +191,11 @@ skills/
 │   ├── evals/                # 评测材料
 │   └── references/           # 参考模板
 │
+├── clarified-requirement-repo-research/
+│   ├── SKILL.md              # Skill 主定义
+│   ├── agents/               # 平台适配配置
+│   └── references/           # 调研模板、工具选择与多仓库规则
+│
 ├── writing-backend-technical-solutions/
 │   ├── SKILL.md              # Skill 主定义
 │   ├── test-prompts.json     # 测试用例
@@ -190,7 +227,7 @@ skills/
 推荐的 Skill 联用流程：
 
 ```
-原始需求材料 → prd-clarifier → 澄清文档 → writing-backend-technical-solutions → 后端技术方案 → 实现编码 → verify-implementation-with-test-cases → 验收对齐报告
+原始需求材料 → prd-clarifier → 澄清文档 → clarified-requirement-repo-research → 依赖仓库 research.md → writing-backend-technical-solutions → 后端技术方案 → 实现编码 → verify-implementation-with-test-cases → 验收对齐报告
 
 新项目接手 → repo-wiki → 项目架构文档 → 快速理解全貌
 
@@ -198,17 +235,19 @@ TOB 多仓库迭代 → tob-weekly-review → 周报 / 风险 action / 下周计
 ```
 
 1. 先用 `prd-clarifier` 把散乱需求整理成结构化文档
-2. 再用 `writing-backend-technical-solutions` 结合代码库生成可评审方案
-3. 方案评审通过后进入实现编码
-4. 实现完成后用 `verify-implementation-with-test-cases` 根据测试用例核对需求、方案、实现和测试预期
-5. 接手新项目时用 `repo-wiki` 快速生成项目架构文档
-6. 每周用 `tob-weekly-review` 固定沉淀 TOB 研发进展与风险闭环
+2. 对跨仓库或仓库归属不清的需求，用 `clarified-requirement-repo-research` 先产出依赖仓库 `research.md`
+3. 再用 `writing-backend-technical-solutions` 结合代码库生成可评审方案
+4. 方案评审通过后进入实现编码
+5. 实现完成后用 `verify-implementation-with-test-cases` 根据测试用例核对需求、方案、实现和测试预期
+6. 接手新项目时用 `repo-wiki` 快速生成项目架构文档
+7. 每周用 `tob-weekly-review` 固定沉淀 TOB 研发进展与风险闭环
 
 ## 安装全部 Skills
 
 ```powershell
 # 一键安装到 Claude Code
 Copy-Item -Recurse .\prd-clarifier $env:USERPROFILE\.claude\skills\
+Copy-Item -Recurse .\clarified-requirement-repo-research $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\writing-backend-technical-solutions $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\verify-implementation-with-test-cases $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.claude\skills\
@@ -217,6 +256,7 @@ Copy-Item -Recurse .\tob-weekly-review $env:USERPROFILE\.claude\skills\
 
 # 一键安装到 Codex
 Copy-Item -Recurse .\prd-clarifier $env:USERPROFILE\.codex\skills\
+Copy-Item -Recurse .\clarified-requirement-repo-research $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\writing-backend-technical-solutions $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\verify-implementation-with-test-cases $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.codex\skills\
