@@ -82,6 +82,28 @@ Copy-Item -Recurse .\writing-backend-technical-solutions $env:USERPROFILE\.codex
 
 ---
 
+### code-simplification-refactor
+
+**用途**: 代码简化与重构
+
+仿照 Claude Code `/simplify` 的工作流，对指定 diff、最近提交、当前改动或指定文件做代码简化审查与安全重构。重点从复用、简化、效率、实现层级四个角度发现维护成本，并在保持行为不变的前提下处理低风险改动。
+
+**适用场景**:
+- 用户要求"代码简化""代码重构""清理重复代码""优化最近提交"
+- 需要检查最近改动里是否存在 N+1、重复查询、重复 DTO/映射、错误 fallback
+- 需要先按 `报告模式 / 安全修复模式 / 确认后修复模式` 控制重构边界
+
+**安装方式**:
+```powershell
+# Claude Code
+Copy-Item -Recurse .\code-simplification-refactor $env:USERPROFILE\.claude\skills\
+
+# Codex
+Copy-Item -Recurse .\code-simplification-refactor $env:USERPROFILE\.codex\skills\
+```
+
+---
+
 ### verify-implementation-with-test-cases
 
 **用途**: 实现后测试用例对齐验证
@@ -201,6 +223,10 @@ skills/
 │   ├── test-prompts.json     # 测试用例
 │   └── references/           # 参考模板与示例
 │
+├── code-simplification-refactor/
+│   ├── SKILL.md              # Skill 主定义
+│   └── test-prompts.json     # 测试用例
+│
 ├── verify-implementation-with-test-cases/
 │   ├── SKILL.md              # Skill 主定义
 │   └── test-prompts.json     # 测试用例
@@ -227,7 +253,7 @@ skills/
 推荐的 Skill 联用流程：
 
 ```
-原始需求材料 → prd-clarifier → 澄清文档 → clarified-requirement-repo-research → 依赖仓库 research.md → writing-backend-technical-solutions → 后端技术方案 → 实现编码 → verify-implementation-with-test-cases → 验收对齐报告
+原始需求材料 → prd-clarifier → 澄清文档 → clarified-requirement-repo-research → 依赖仓库 research.md → writing-backend-technical-solutions → 后端技术方案 → 实现编码 → code-simplification-refactor → verify-implementation-with-test-cases → 验收对齐报告
 
 新项目接手 → repo-wiki → 项目架构文档 → 快速理解全貌
 
@@ -238,9 +264,10 @@ TOB 多仓库迭代 → tob-weekly-review → 周报 / 风险 action / 下周计
 2. 对跨仓库或仓库归属不清的需求，用 `clarified-requirement-repo-research` 先产出依赖仓库 `research.md`
 3. 再用 `writing-backend-technical-solutions` 结合代码库生成可评审方案
 4. 方案评审通过后进入实现编码
-5. 实现完成后用 `verify-implementation-with-test-cases` 根据测试用例核对需求、方案、实现和测试预期
-6. 接手新项目时用 `repo-wiki` 快速生成项目架构文档
-7. 每周用 `tob-weekly-review` 固定沉淀 TOB 研发进展与风险闭环
+5. 编码完成后用 `code-simplification-refactor` 做行为保持型清理和重构收尾
+6. 实现完成后用 `verify-implementation-with-test-cases` 根据测试用例核对需求、方案、实现和测试预期
+7. 接手新项目时用 `repo-wiki` 快速生成项目架构文档
+8. 每周用 `tob-weekly-review` 固定沉淀 TOB 研发进展与风险闭环
 
 ## 安装全部 Skills
 
@@ -249,6 +276,7 @@ TOB 多仓库迭代 → tob-weekly-review → 周报 / 风险 action / 下周计
 Copy-Item -Recurse .\prd-clarifier $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\clarified-requirement-repo-research $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\writing-backend-technical-solutions $env:USERPROFILE\.claude\skills\
+Copy-Item -Recurse .\code-simplification-refactor $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\verify-implementation-with-test-cases $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\repo-wiki $env:USERPROFILE\.claude\skills\
@@ -258,6 +286,7 @@ Copy-Item -Recurse .\tob-weekly-review $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\prd-clarifier $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\clarified-requirement-repo-research $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\writing-backend-technical-solutions $env:USERPROFILE\.codex\skills\
+Copy-Item -Recurse .\code-simplification-refactor $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\verify-implementation-with-test-cases $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\repo-wiki $env:USERPROFILE\.codex\skills\
