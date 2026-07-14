@@ -107,6 +107,29 @@ Copy-Item -Recurse .\code-simplification-refactor $env:USERPROFILE\.codex\skills
 
 ---
 
+### git-add-new-business-code
+
+**用途**: 只把新增业务代码纳入 Git 管理
+
+在实现收尾、代码评审、验证或分支完成前，检查未跟踪文件，只对明确属于新增业务代码、测试代码或前端业务代码的文件执行精确 `git add`。不会提交、推送或暂存已有文件的修改。
+
+**适用场景**:
+- 实现完成后需要检查是否有新增业务文件尚未纳入 Git
+- 只允许暂存新增业务代码和测试代码，不能使用 `git add .`
+- 需要跳过文档、配置、生成文件、资源文件和其他非业务新增
+- 文件业务归属不明确时，需要保持未暂存并报告待确认项
+
+**安装方式**:
+```powershell
+# Claude Code
+Copy-Item -Recurse .\git-add-new-business-code $env:USERPROFILE\.claude\skills\
+
+# Codex / Agents
+Copy-Item -Recurse .\git-add-new-business-code $env:USERPROFILE\.agents\skills\
+```
+
+---
+
 ### verify-implementation-with-test-cases
 
 **用途**: 实现后测试用例对齐验证
@@ -230,6 +253,9 @@ skills/
 │   ├── SKILL.md              # Skill 主定义
 │   └── test-prompts.json     # 测试用例
 │
+├── git-add-new-business-code/
+│   └── SKILL.md              # Skill 主定义
+│
 ├── verify-implementation-with-test-cases/
 │   ├── SKILL.md              # Skill 主定义
 │   └── test-prompts.json     # 测试用例
@@ -280,6 +306,7 @@ Copy-Item -Recurse .\prd-clarifier $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\clarified-requirement-repo-research $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\writing-backend-technical-solutions $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\code-simplification-refactor $env:USERPROFILE\.claude\skills\
+Copy-Item -Recurse .\git-add-new-business-code $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\verify-implementation-with-test-cases $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\repo-wiki $env:USERPROFILE\.claude\skills\
@@ -290,6 +317,7 @@ Copy-Item -Recurse .\prd-clarifier $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\clarified-requirement-repo-research $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\writing-backend-technical-solutions $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\code-simplification-refactor $env:USERPROFILE\.codex\skills\
+Copy-Item -Recurse .\git-add-new-business-code $env:USERPROFILE\.agents\skills\
 Copy-Item -Recurse .\verify-implementation-with-test-cases $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\repo-wiki $env:USERPROFILE\.codex\skills\
