@@ -130,6 +130,29 @@ Copy-Item -Recurse .\git-add-new-business-code $env:USERPROFILE\.agents\skills\
 
 ---
 
+### finishing-with-business-staging
+
+**用途**: 验证实现、暂存新增业务代码并安全完成开发分支
+
+实现完成后，先运行相关验证，再调用 `git-add-new-business-code` 检查遗漏的新增业务文件。存在尚未提交的改动时阻止合并、推送或清理；工作区满足门禁后，再引导用户选择本地合并、推送并创建拉取请求、保留分支或确认丢弃。
+
+**适用场景**:
+- 用户要求“收尾分支”“完成实现并处理分支”
+- 分支结束前需要检查是否遗漏新增业务代码或测试代码
+- 需要在合并、推送或清理前建立测试和 Git 状态门禁
+- 需要不依赖外部分支收尾技能的独立流程
+
+**安装方式**:
+```powershell
+# Claude Code
+Copy-Item -Recurse .\finishing-with-business-staging $env:USERPROFILE\.claude\skills\
+
+# Codex / Agents
+Copy-Item -Recurse .\finishing-with-business-staging $env:USERPROFILE\.agents\skills\
+```
+
+---
+
 ### verify-implementation-with-test-cases
 
 **用途**: 实现后测试用例对齐验证
@@ -256,6 +279,10 @@ skills/
 ├── git-add-new-business-code/
 │   └── SKILL.md              # Skill 主定义
 │
+├── finishing-with-business-staging/
+│   ├── SKILL.md              # Skill 主定义
+│   └── agents/               # Codex 界面元数据
+│
 ├── verify-implementation-with-test-cases/
 │   ├── SKILL.md              # Skill 主定义
 │   └── test-prompts.json     # 测试用例
@@ -282,7 +309,7 @@ skills/
 推荐的 Skill 联用流程：
 
 ```
-原始需求材料 → prd-clarifier → 澄清文档 → clarified-requirement-repo-research → 依赖仓库 research.md → writing-backend-technical-solutions → 后端技术方案 → 实现编码 → code-simplification-refactor → verify-implementation-with-test-cases → 验收对齐报告
+原始需求材料 → prd-clarifier → 澄清文档 → clarified-requirement-repo-research → 依赖仓库 research.md → writing-backend-technical-solutions → 后端技术方案 → 实现编码 → code-simplification-refactor → verify-implementation-with-test-cases → 验收对齐报告 → finishing-with-business-staging → 分支收尾
 
 新项目接手 → repo-wiki → 项目架构文档 → 快速理解全貌
 
@@ -295,8 +322,9 @@ TOB 多仓库迭代 → tob-weekly-review → 周报 / 风险 action / 下周计
 4. 方案评审通过后进入实现编码
 5. 编码完成后用 `code-simplification-refactor` 做行为保持型清理和重构收尾
 6. 实现完成后用 `verify-implementation-with-test-cases` 根据测试用例核对需求、方案、实现和测试预期
-7. 接手新项目时用 `repo-wiki` 快速生成项目架构文档
-8. 每周用 `tob-weekly-review` 固定沉淀 TOB 研发进展与风险闭环
+7. 验收完成后用 `finishing-with-business-staging` 检查新增业务代码并安全完成开发分支
+8. 接手新项目时用 `repo-wiki` 快速生成项目架构文档
+9. 每周用 `tob-weekly-review` 固定沉淀 TOB 研发进展与风险闭环
 
 ## 安装全部 Skills
 
@@ -307,6 +335,7 @@ Copy-Item -Recurse .\clarified-requirement-repo-research $env:USERPROFILE\.claud
 Copy-Item -Recurse .\writing-backend-technical-solutions $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\code-simplification-refactor $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\git-add-new-business-code $env:USERPROFILE\.claude\skills\
+Copy-Item -Recurse .\finishing-with-business-staging $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\verify-implementation-with-test-cases $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\repo-wiki $env:USERPROFILE\.claude\skills\
@@ -318,6 +347,7 @@ Copy-Item -Recurse .\clarified-requirement-repo-research $env:USERPROFILE\.codex
 Copy-Item -Recurse .\writing-backend-technical-solutions $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\code-simplification-refactor $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\git-add-new-business-code $env:USERPROFILE\.agents\skills\
+Copy-Item -Recurse .\finishing-with-business-staging $env:USERPROFILE\.agents\skills\
 Copy-Item -Recurse .\verify-implementation-with-test-cases $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\repo-wiki $env:USERPROFILE\.codex\skills\

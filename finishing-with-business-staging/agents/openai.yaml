@@ -1,0 +1,4 @@
+interface:
+  display_name: "业务暂存与分支收尾"
+  short_description: "Verify, stage business code, and finish branches"
+  default_prompt: "使用 $finishing-with-business-staging 验证实现、暂存新增业务代码，并安全完成当前开发分支。"
