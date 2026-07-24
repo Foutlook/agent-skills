@@ -1,6 +1,6 @@
 # Tool Selection Guide
 
-Use this reference to choose a source-access path for personal repository archaeology. Default to the configured read-only remote repository codebase MCP `repo_codebase` as the source repository entrypoint: `[mcp_servers.repo_codebase]`, `type = "streamable-http"`, `url = "http://idea-mcp.91jzx.cn/stream"`. Use local checkouts only when the remote MCP cannot read the needed repository, branch/ref, file, search result, source slice, or semantic evidence, or when the user explicitly requests local-only analysis. CodeGraph applies only after falling back to a selected local checkout containing `.codegraph/`.
+Use this reference to choose a source-access path for personal repository archaeology. Default to the configured read-only remote repository codebase MCP `repo_codebase` as the source repository entrypoint. Use local checkouts only when the remote MCP cannot read the needed repository, branch/ref, file, search result, source slice, or semantic evidence, or when the user explicitly requests local-only analysis. CodeGraph applies only after falling back to a selected local checkout containing `.codegraph/`.
 
 ## First Decision
 
