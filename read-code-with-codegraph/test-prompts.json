@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "prompt": "请解释 LearningTrackServiceImpl.queryTracksByUserIdsAndLearningDate 的完整取数逻辑：入口在哪里、最终从哪里获取轨迹、账号姓名和年级分别来自哪里、哪些参数真正影响结果？",
+    "expected": "先检查 CodeGraph 索引状态；用 query、node、callees 定位；再读取源码验证，给出入口、LearningTrackFacade、MemberRepository、UserFacade、关键参数和证据行号，并区分图关系与源码事实。"
+  },
+  {
+    "id": 2,
+    "prompt": "这个分支相对基线新增了哪些学习轨迹功能，影响了哪些直接模块？请只做分析，不改代码。",
+    "expected": "先确定 Git 比较基线并检查或刷新 CodeGraph 索引；结合 diff 与 CodeGraph 关系识别新增接口、服务、DTO 和依赖，回源码核实最终数据源，并说明影响范围与分析局限。"
+  },
+  {
+    "id": 3,
+    "prompt": "帮我查一下 exportTracksByUserIdsAndLearningDate：谁调用它、它又调用谁？仓库里有同名方法，请避免把调用方向说反。",
+    "expected": "检查索引状态；用 query、node --file、callers、callees 获取候选；识别接口、实现与 Facade 同名关系可能混淆；回源码逐条确认，正确说明 Controller 到 Service 导出、queryTracks、Facade 与 Excel 的调用链。"
+  }
+]

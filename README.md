@@ -248,6 +248,34 @@ Copy-Item -Recurse .\tob-weekly-review $env:USERPROFILE\.codex\skills\
 
 ---
 
+### read-code-with-codegraph
+
+**用途**: 使用 CodeGraph 优先阅读、理解和追踪现有代码
+
+在只读代码分析任务中先检查 CodeGraph 索引状态，索引过期时自动刷新，再通过符号和调用关系定位源码，最终回到当前源码验证真实入口、数据源、关键参数和影响范围。
+
+**适用场景**:
+- 用户要求解释现有代码、定位实现或梳理调用链
+- 需要分析依赖关系、影响范围或分支新增功能
+- 仓库存在接口、实现类、Facade 或重载同名方法，需要避免误判调用方向
+
+**核心特性**:
+- 索引自检：通过 `codegraph status --json` 判断是否需要增量同步或全量重建
+- CodeGraph 优先：先定位符号和调用关系，再按文件与行号阅读源码
+- 源码闭环：图关系只作导航证据，关键结论必须由源码验证
+- 异常兜底：CLI 不可用、同步失败或关系未解析时回退到 `rg` 和源码搜索
+
+**安装方式**:
+```powershell
+# Claude Code
+Copy-Item -Recurse .\read-code-with-codegraph $env:USERPROFILE\.claude\skills\
+
+# Codex
+Copy-Item -Recurse .\read-code-with-codegraph $env:USERPROFILE\.codex\skills\
+```
+
+---
+
 ## 目录结构
 
 ```
@@ -301,6 +329,11 @@ skills/
 │   ├── references/           # 周报模板
 │   └── scripts/              # 周报骨架生成脚本
 │
+├── read-code-with-codegraph/
+│   ├── SKILL.md              # Skill 主定义
+│   ├── agents/               # Codex 界面元数据
+│   └── test-prompts.json     # 评测用例
+│
 └── README.md                 # 本文件
 ```
 
@@ -314,6 +347,8 @@ skills/
 新项目接手 → repo-wiki → 项目架构文档 → 快速理解全貌
 
 TOB 多仓库迭代 → tob-weekly-review → 周报 / 风险 action / 下周计划
+
+代码阅读与调用链分析 → read-code-with-codegraph → CodeGraph 关系 + 源码证据
 ```
 
 1. 先用 `prd-clarifier` 把散乱需求整理成结构化文档
@@ -325,6 +360,7 @@ TOB 多仓库迭代 → tob-weekly-review → 周报 / 风险 action / 下周计
 7. 验收完成后用 `finishing-with-business-staging` 检查新增业务代码并安全完成开发分支
 8. 接手新项目时用 `repo-wiki` 快速生成项目架构文档
 9. 每周用 `tob-weekly-review` 固定沉淀 TOB 研发进展与风险闭环
+10. 阅读和分析现有代码时，用 `read-code-with-codegraph` 优先定位调用关系并回到源码验证
 
 ## 安装全部 Skills
 
@@ -340,6 +376,7 @@ Copy-Item -Recurse .\verify-implementation-with-test-cases $env:USERPROFILE\.cla
 Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\repo-wiki $env:USERPROFILE\.claude\skills\
 Copy-Item -Recurse .\tob-weekly-review $env:USERPROFILE\.claude\skills\
+Copy-Item -Recurse .\read-code-with-codegraph $env:USERPROFILE\.claude\skills\
 
 # 一键安装到 Codex
 Copy-Item -Recurse .\prd-clarifier $env:USERPROFILE\.codex\skills\
@@ -352,6 +389,7 @@ Copy-Item -Recurse .\verify-implementation-with-test-cases $env:USERPROFILE\.cod
 Copy-Item -Recurse .\refactor-module-safely $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\repo-wiki $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\tob-weekly-review $env:USERPROFILE\.codex\skills\
+Copy-Item -Recurse .\read-code-with-codegraph $env:USERPROFILE\.codex\skills\
 ```
 
 ## 版本管理
