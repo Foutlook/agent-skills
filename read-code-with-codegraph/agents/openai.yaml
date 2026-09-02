@@ -1,4 +1,4 @@
 interface:
   display_name: "CodeGraph 代码阅读"
-  short_description: "优先使用 CodeGraph 阅读代码，并自动刷新过期索引"
-  default_prompt: "使用 $read-code-with-codegraph 阅读并解释现有代码的实际调用链。"
+  short_description: "优先读取最新 release 或 bugfix 代码并安全回退本地"
+  default_prompt: "使用 $read-code-with-codegraph 阅读最新目标分支并解释现有代码的实际调用链。"

@@ -2,7 +2,7 @@
   {
     "id": 1,
     "prompt": "请解释 LearningTrackServiceImpl.queryTracksByUserIdsAndLearningDate 的完整取数逻辑：入口在哪里、最终从哪里获取轨迹、账号姓名和年级分别来自哪里、哪些参数真正影响结果？",
-    "expected": "先检查 CodeGraph 索引状态；用 query、node、callees 定位；再读取源码验证，给出入口、LearningTrackFacade、MemberRepository、UserFacade、关键参数和证据行号，并区分图关系与源码事实。"
+    "expected": "先 fetch 并确定最新 release 或 bugfix 目标分支及提交；本地 HEAD 与目标提交一致且源码未修改时检查本地 CodeGraph 索引，再用 query、node、callees 定位；最后读取源码验证，给出读取来源、分支、提交、入口、LearningTrackFacade、MemberRepository、UserFacade、关键参数和证据行号，并区分图关系与源码事实。"
   },
   {
     "id": 2,
@@ -12,6 +12,26 @@
   {
     "id": 3,
     "prompt": "帮我查一下 exportTracksByUserIdsAndLearningDate：谁调用它、它又调用谁？仓库里有同名方法，请避免把调用方向说反。",
-    "expected": "检查索引状态；用 query、node --file、callers、callees 获取候选；识别接口、实现与 Facade 同名关系可能混淆；回源码逐条确认，正确说明 Controller 到 Service 导出、queryTracks、Facade 与 Excel 的调用链。"
+    "expected": "先确认最新目标分支和代码来源；用 query、node --file、callers、callees 获取候选；识别接口、实现与 Facade 同名关系可能混淆；回目标版本源码逐条确认，正确说明 Controller 到 Service 导出、queryTracks、Facade 与 Excel 的调用链。"
+  },
+  {
+    "id": 4,
+    "prompt": "请读取这个项目最新 release 分支的订单状态计算逻辑。本地还停在上一个 release，但不要无必要地改动我的检出分支。",
+    "expected": "fetch 后按语义化版本确定最新 release 及提交；判断本地 HEAD 落后，优先用远程 codegraph_explore 并校验仓库和目标版本；远程结果可信时直接分析且不切换本地分支，输出远程来源、分支、提交和源码证据。"
+  },
+  {
+    "id": 5,
+    "prompt": "分析最新 bugfix 分支里的退款调用链；远程 CodeGraph 没有收录这个仓库，本地工作区是干净的。",
+    "expected": "fetch 并选出最新 bugfix；确认远程不可用后，在 commentary 说明切换目标；工作区干净时安全切换或创建跟踪分支，只允许 fast-forward；确认 HEAD 等于远程提交后刷新本地索引并分析。"
+  },
+  {
+    "id": 6,
+    "prompt": "分析最新 bugfix 分支，但远程 CodeGraph 读不到，而且我本地有未提交修改。",
+    "expected": "识别远程不可用和工作区不干净；不得 stash、reset、清理、覆盖或强制切换，不得把当前本地代码称为最新；说明目标分支与提交并请用户先处理本地修改。"
+  },
+  {
+    "id": 7,
+    "prompt": "帮我读最新版本代码。远程同时有 release/3.12.0、release/3.11.8 和 bugfix/3.12.1。",
+    "expected": "用户未指定更具体目标时按可比较的语义化版本选择 bugfix/3.12.1；不能只按分支字典序或当前检出分支判断，随后按本地最新性、远程 MCP、必要时安全切换的顺序选择来源。"
   }
 ]
