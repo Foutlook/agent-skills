@@ -250,9 +250,9 @@ Copy-Item -Recurse .\tob-weekly-review $env:USERPROFILE\.codex\skills\
 
 ### read-code-with-codegraph
 
-**用途**: 使用 CodeGraph 优先阅读、理解和追踪现有代码
+**用途**: 使用 CodeGraph 优先阅读、理解和追踪最新 release 或 bugfix 代码
 
-在只读代码分析任务中先检查 CodeGraph 索引状态，索引过期时自动刷新，再通过符号和调用关系定位源码，最终回到当前源码验证真实入口、数据源、关键参数和影响范围。
+先确定远程最新 release 或 bugfix 分支及提交；本地代码已最新时使用本地 CodeGraph，本地落后时优先读取并验证远程 CodeGraph，远程不可用时才在工作区干净且分支可快进的前提下安全切换本地分支。随后通过符号和调用关系定位源码，最终回到目标版本源码验证真实入口、数据源、关键参数和影响范围。
 
 **适用场景**:
 - 用户要求解释现有代码、定位实现或梳理调用链
@@ -260,10 +260,12 @@ Copy-Item -Recurse .\tob-weekly-review $env:USERPROFILE\.codex\skills\
 - 仓库存在接口、实现类、Facade 或重载同名方法，需要避免误判调用方向
 
 **核心特性**:
+- 版本自检：更新远程引用并按目标版本或分支提交时间确定最新 release / bugfix
+- 来源路由：本地最新时读本地，本地落后时优先读远程 MCP，远程不可用时安全切换
 - 索引自检：通过 `codegraph status --json` 判断是否需要增量同步或全量重建
 - CodeGraph 优先：先定位符号和调用关系，再按文件与行号阅读源码
 - 源码闭环：图关系只作导航证据，关键结论必须由源码验证
-- 异常兜底：CLI 不可用、同步失败或关系未解析时回退到 `rg` 和源码搜索
+- 安全边界：不自动 stash、强制切换、重置或覆盖用户的未提交修改
 
 **安装方式**:
 ```powershell
