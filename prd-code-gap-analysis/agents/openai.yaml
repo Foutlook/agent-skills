@@ -1,0 +1,4 @@
+interface:
+  display_name: "需求与代码差异分析"
+  short_description: "对照需求、最新代码与测试数据，识别未确认点和已证变更范围"
+  default_prompt: "使用 $prd-code-gap-analysis 对照需求、最新代码和必要的 test 数据证据，输出未确认点与变更范围。"

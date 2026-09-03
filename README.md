@@ -28,6 +28,31 @@ Copy-Item -Recurse .\prd-clarifier $env:USERPROFILE\.codex\skills\
 
 ---
 
+### prd-code-gap-analysis
+
+**用途**: 需求与最新代码、数据能力差异分析
+
+把已有基本业务骨架的新增或变更需求拆成原子需求，逐项对照最新 `release` / `bugfix` 代码和必要的 test 数据证据，识别当前已支持能力、需求未确认点以及已经证实的变更范围。
+
+**适用场景**:
+- 需求评审时需要确认“当前代码是不是已经如此”
+- 编码前需要区分确定需变更、联动核查和无需变更范围
+- 数据相关需求需要核对结构、写入/读取链路和 test 环境实际覆盖
+- 本地代码不是最新版本，需要优先读取远程 CodeGraph，必要时安全切换最新目标分支
+
+**安装方式**:
+```powershell
+# Codex
+Copy-Item -Recurse .\prd-code-gap-analysis $env:USERPROFILE\.codex\skills\
+
+# Agents
+Copy-Item -Recurse .\prd-code-gap-analysis $env:USERPROFILE\.agents\skills\
+```
+
+**详细文档**: [prd-code-gap-analysis/SKILL.md](prd-code-gap-analysis/SKILL.md)
+
+---
+
 ### clarified-requirement-repo-research
 
 **用途**: 基于澄清需求做后端依赖仓库考古
